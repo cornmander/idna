@@ -265,5 +265,22 @@ class IDNATests(unittest.TestCase):
         self.assertRaises(idna.IDNAError, idna.decode, 'XN---------90GGLBAGAAC.AA')
         self.assertRaises(idna.IDNAError, idna.decode, 'xn---------90gglbagaac.aa')
 
+    def test_allow_hyphens(self):
+
+        self.assertRaises(idna.IDNAError, idna.decode, 'r2---sn-huoa-cvhl.googlevideo.com')
+        self.assertEqual(idna.decode('r2---sn-huoa-cvhl.googlevideo.com', allow_hyphens=True),
+                                     'r2---sn-huoa-cvhl.googlevideo.com')
+        self.assertEqual(idna.decode('r6---sn-i5onxoxu-cxgl.c.doc-0-0-sj.sj.googleusercontent.com', allow_hyphens=True),
+                                     'r6---sn-i5onxoxu-cxgl.c.doc-0-0-sj.sj.googleusercontent.com')
+
+    def test_allow_invalid(self):
+            self.assertRaises(idna.IDNAError, idna.decode, 'xn--co8ha.tk')
+            self.assertEqual(idna.decode('xn--co8ha.tk', allow_invalid=True),
+                             u'\u1f414\u1f414.tk')
+
+            self.assertRaises(idna.IDNAError, idna.decode, 'xn--qeiaa.ws')
+            self.assertEqual(idna.decode('xn--qeiaa.ws', allow_invalid=True),
+                             u'\u2764\u2764\u2764.ws')
+
 if __name__ == '__main__':
     unittest.main()
